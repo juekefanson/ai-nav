@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Tool {
@@ -14,12 +14,49 @@ model Tool {
   description String
   url         String
   category    String
-  priceTier   String   @default("free") // free / freemium / paid
-  tags        String[] // ["image", "writing", ...]
+  priceTier   String   @default("free")
+  pricing     String   @default("免费")
+  tags        String[]
+  logoEmoji   String?
+  rating      Float    @default(4.5)
+  votes       Int      @default(1000)
+  clicks      Int      @default(0)
+  status      String   @default("APPROVED")
+  metaTitle   String?
+  metaDesc    String?
+  keywords    String[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  // 🔹 核心修复：必须添加的反向关系字段
+  affiliateClicks AffiliateClick[]
+  auditLogs       AuditLog[]
+
   @@index([category])
-  @@index([priceTier])
-  @@index([tags])
+  @@index([status])
+  @@index([slug])
+}
+
+model AffiliateClick {
+  id        String   @id @default(cuid())
+  toolId    String
+  tool      Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  ipAddress String
+  userAgent String?
+  referer   String?
+  clickedAt DateTime @default(now())
+
+  @@index([toolId])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  toolId    String
+  tool      Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  userId    String
+  action    String
+  reason    String?
+  createdAt DateTime @default(now())
+
+  @@index([toolId])
 }

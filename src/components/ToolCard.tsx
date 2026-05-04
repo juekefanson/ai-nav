@@ -1,12 +1,32 @@
-import Link from 'next/link';
-import { Tool } from '@/data/tools';
+'use client';
 
-export default function ToolCard({ tool }: { tool: Tool }) {
+import Link from 'next/link';
+import { Tool } from '../data/tools';
+
+interface ToolCardProps {
+  tool: Tool;
+}
+
+export default function ToolCard({ tool }: ToolCardProps) {
+  const handleVisit = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    try {
+      await fetch('/api/affiliate/click', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ toolId: tool.id }),
+      });
+    } catch (err) {
+      console.error('Failed to track click', err);
+    }
+    
+    window.open(tool.url, '_blank');
+  };
+
   return (
     <Link href={`/tools/${tool.id}`}>
-      <div className="group relative flex flex-col h-full bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-5 hover:border-[var(--accent)]/50 hover:shadow-lg hover:shadow-[var(--accent)]/10 transition-all duration-300 hover:-translate-y-1">
-        
-        {/* 顶部：图标 + 名称 + 价格标签 */}
+      <div className="group relative flex flex-col h-full bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-5 hover:border-[var(--accent)]/50 hover:shadow-lg hover:shadow-[var(--accent)]/10 transition-all duration-300 hover:-translate-y-1 cursor-pointer">
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 flex items-center justify-center bg-[var(--bg-primary)] rounded-xl text-2xl border border-[var(--border)] group-hover:scale-110 transition-transform">
@@ -17,7 +37,6 @@ export default function ToolCard({ tool }: { tool: Tool }) {
                 {tool.name}
               </h3>
               <div className="flex items-center gap-1 mt-1">
-                {/* 星星评分 */}
                 <span className="text-yellow-500 text-sm">★</span>
                 <span className="text-sm font-medium text-[var(--text-primary)]">{tool.rating}</span>
                 <span className="text-xs text-[var(--text-secondary)]">({(tool.votes / 1000).toFixed(1)}k)</span>
@@ -36,12 +55,10 @@ export default function ToolCard({ tool }: { tool: Tool }) {
           </span>
         </div>
 
-        {/* 描述 */}
         <p className="text-sm text-[var(--text-secondary)] line-clamp-2 mb-4 flex-grow">
           {tool.description}
         </p>
 
-        {/* 底部：标签 + 访问按钮 */}
         <div className="flex items-center justify-between mt-auto pt-3 border-t border-[var(--border)]/50">
           <div className="flex flex-wrap gap-2">
             {tool.tags.slice(0, 2).map(tag => (
@@ -50,9 +67,13 @@ export default function ToolCard({ tool }: { tool: Tool }) {
               </span>
             ))}
           </div>
-          <span className="text-xs font-medium text-[var(--accent)] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+          
+          <button
+            onClick={handleVisit}
+            className="text-xs font-medium text-[var(--accent)] flex items-center gap-1 group-hover:translate-x-1 transition-transform hover:underline"
+          >
             访问官网 →
-          </span>
+          </button>
         </div>
       </div>
     </Link>

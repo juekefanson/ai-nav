@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { prisma } from '@/lib/db';
+import { prisma } from '../../../lib/db';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const tools = await prisma.tool.findMany({

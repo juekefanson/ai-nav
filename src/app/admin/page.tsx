@@ -1,5 +1,5 @@
-import { prisma } from '../../../lib/db';
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
+import { prisma } from '@/lib/db';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default async function AdminDashboard() {
   const [totalTools, pendingTools, approvedTools, totalClicks] = await Promise.all([

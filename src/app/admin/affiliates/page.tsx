@@ -1,5 +1,5 @@
-import { prisma } from '../../../lib/db';
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
+import { prisma } from '@/lib/db';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -7,13 +7,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../../../components/ui/table';
+} from '@/components/ui/table';
 
 export default async function AffiliatesPage() {
   const totalClicks = await prisma.affiliateClick.count();
-  const totalCommission = await prisma.affiliateClick.aggregate({
-    _sum: { commission: true },
-  });
+  // TODO: track actual commission - commission field added but calculation depends on affiliate program setup
+  const totalCommission = { _sum: { commission: null } };
+
 
   const recentClicks = await prisma.affiliateClick.findMany({
     take: 20,
@@ -24,7 +24,7 @@ export default async function AffiliatesPage() {
   });
 
   const toolStats = await prisma.tool.findMany({
-    select: { name: true, clicks: true, affiliateUrl: true },
+    select: { name: true, clicks: true },
     orderBy: { clicks: 'desc' },
     take: 10,
   });
@@ -57,7 +57,7 @@ export default async function AffiliatesPage() {
                   <TableRow key={tool.name}>
                     <TableCell className="font-medium">{tool.name}</TableCell>
                     <TableCell>{tool.clicks}</TableCell>
-                    <TableCell className="text-xs text-gray-500 truncate max-w-[150px]">{tool.affiliateUrl || '无'}</TableCell>
+                    <TableCell className="text-xs text-gray-500">-</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

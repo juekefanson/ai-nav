@@ -21,6 +21,7 @@ model Tool {
   rating      Float    @default(4.5)
   votes       Int      @default(1000)
   clicks      Int      @default(0)
+  affiliateUrl String?
   status      String   @default("APPROVED")
   metaTitle   String?
   metaDesc    String?
@@ -45,6 +46,7 @@ model AffiliateClick {
   userAgent String?
   referer   String?
   clickedAt DateTime @default(now())
+  commission   Decimal? @default(0)
 
   @@index([toolId])
 }

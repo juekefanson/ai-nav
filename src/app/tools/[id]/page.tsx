@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { prisma } from '../../../lib/db';
+import { prisma } from '@/lib/db';
 import type { Metadata } from 'next';
 
 // 🔹 1. 动态生成 JSON-LD 数据

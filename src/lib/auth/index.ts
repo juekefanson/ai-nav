@@ -8,14 +8,16 @@ export async function auth() {
 
 // For client-side sign in/out: import { signIn, signOut } from 'next-auth/react' directly in 'use client' components
 
-// Type augmentation for session.user.role
+// Type augmentation for session.user.role + session.user.id
 declare module 'next-auth' {
   interface Session {
     user: {
+      id?: string;
       role?: string;
     } & DefaultSession['user'];
   }
   interface User {
+    id?: string;
     role?: string;
   }
 }

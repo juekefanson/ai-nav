@@ -16,7 +16,7 @@ export type Tool = {
   description: string;
   tags: string[];
   category: string;
-  pricing: '免费' | '免费增值' | '付费';
+  pricing: '免费' | '免费增值' | '付费' | '即将上线';
   rating: number;
   votes: number;
   url: string;

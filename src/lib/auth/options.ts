@@ -36,12 +36,18 @@ export const authOptions: NextAuthOptions = {
   ],
   pages: { signIn: '/admin/login' },
   callbacks: {
-    async session({ session, user }) {
-      if (session.user) (session.user as any).role = (user as any).role;
+    async session({ session, token }) {
+      if (session.user) {
+        (session.user as any).role = (token as any).role;
+        (session.user as any).id = (token as any).id;
+      }
       return session;
     },
     async jwt({ token, user }) {
-      if (user) (token as any).role = (user as any).role;
+      if (user) {
+        (token as any).role = (user as any).role;
+        (token as any).id = (user as any).id;
+      }
       return token;
     },
   },
